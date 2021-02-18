@@ -1,0 +1,38 @@
+// AQUI ESTA LA TRANSICION DE ANIMACION DE LAS TARJETAS, ADEMAS EL TAMAÑO DE ELLAS
+.card{
+  transition: transform .2s;
+  width: 18rem;
+  height: 18rem;
+}
+// ESTE ES EL EFECTO DE AUMENTO DE ESCALA CUANDO PASAS EL CURSOS SOBRE LA TARJETA
+.card:hover {
+  transform: scale(1.1);
+}
+// AQUI ESTA LA IMAGEN DE LA CARD PLANETA
+.planetas img{
+display: inline-block;
+padding-bottom: 25px;
+padding-right: 15px;
+}
+// ESTE ES EL TEXTO DENTRO DE LA CARD PLANETA
+.planeta h1{
+display: inline-block;
+}
+// AQUI ESTA LA IMAGEN DE LA CARD PERSONAJES
+.character img{
+display: inline-block;
+padding-bottom: 25px;
+padding-right: 15px;
+}
+// ESTE ES EL TEXTO DENTRO DE LA CARD PERSONAJES
+.character h1{
+display: inline-block;
+}
+// COLOR DE TEXTO PERSONAJE
+.character{
+    color: #06BFAA;
+}
+// COLOR DE TEXTO PLANETAS
+.planeta{
+    color:  #06BFAA;
+}

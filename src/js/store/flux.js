@@ -1,42 +1,77 @@
+import { Context } from "./appContext";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			planetas: [{}],
+			personajes: [{}],
+			favourites: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
+			addFav: favorito => {
+				setStore({
+					// favoritos = favoritos en store + lo nuevo que viene por el parametro
+					favourites: getStore().favourites.concat(favorito)
 				});
+			},
 
-				//reset the global store
-				setStore({ demo: demo });
+			removFav: favorito => {
+				setStore({
+					favourites: getStore().favourites.filter(function(item, index) {
+						// return favorito.id !== item.id;
+						if (favorito.id !== item.id) {
+							return item;
+						}
+					})
+				});
+			},
+
+			loadSomeData: () => {
+				fetch("https://www.swapi.tech/api/planets?page=1&limit=10")
+					.then(response => response.json())
+					.then(async data => {
+						let planetsBasic = data.results;
+						let planetsFull = planetsBasic.map(async elem => {
+							const datos = await fetch(elem.url).then(response => response.json());
+							return {
+								name: elem.name,
+								climate: datos.result.properties.climate,
+								population: datos.result.properties.population,
+								orbital: datos.result.properties.orbital_period,
+								Rotation: datos.result.properties.rotation_period,
+								Diameter: datos.result.properties.diameter,
+								terrain: datos.result.properties.terrain,
+								id: elem.uid,
+								url: elem.url
+							};
+						});
+						let planetsFullFinal = await Promise.all(planetsFull);
+						setStore({ planetas: planetsFullFinal });
+					});
+
+				fetch("https://www.swapi.tech/api/people?page=2&limit=10")
+					.then(response => response.json())
+					.then(async data => {
+						let peopleBasic = data.results;
+						let peopleFull = peopleBasic.map(async elem => {
+							const datos = await fetch(elem.url).then(response => response.json());
+							return {
+								name: elem.name,
+								birthYear: datos.result.properties.birth_year,
+								gender: datos.result.properties.gender,
+								height: datos.result.properties.height,
+								skin: datos.result.properties.skin_color,
+								eyes: datos.result.properties.eye_color,
+								hair: datos.result.properties.hair_color,
+								id: elem.uid,
+								url: elem.url
+							};
+						});
+						let peopleFullFinal = await Promise.all(peopleFull);
+						setStore({ personajes: peopleFullFinal });
+					});
 			}
 		}
 	};
